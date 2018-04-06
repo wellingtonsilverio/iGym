@@ -1,16 +1,45 @@
 <?php
-header("Access-Control-Allow-Origin:*");
-header("Content-Type: application/x-www-form-urlencoded");
-header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept");
+// FOR DOWNLOAD FILE WHEN MADE EXTERNAL ACCESS 
+//header("Access-Control-Allow-Origin:*");
+//header("Content-Type: application/x-www-form-urlencoded");
+//header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept");
 
-include 'class/connect.pdo.php';
+// LIBRARIES
+include_once 'class/connect.pdo.php';
+include_once 'class/security.php';
 
-$objConn = new Connect();
-$conn = $objConn->getInstance();
+// USER CLASS FOR ANYTHING WHO USERS CAN DO
+class User extends Security{
+    private $Connection;
+    private $DataBaseInstance;
+
+    function __construct (){
+        // INITIALIZE THE DATABASE CONECTION
+        $this->Connection = new Connect();
+        $this->DataBaseInstance = $this->Connection->getInstance();
+    }
+
+    public function Logar($usr_email, $usr_pass, $usr_mac, $usr_system, $usr_ip){
+        
+        $SqlQuery = $this->DataBaseInstance->prepare("SELECT usr_id, usr_permission FROM `users` WHERE (`usr_email` = ? OR `usr_nick` = ?) AND `usr_pass` = ?");
+        $SqlQuery->execute(array($usr_email, $usr_email, $usr_pass));
+        
+        if($return = $SqlQuery->fetchObject()){
+            return parent::CreateToken($usr_system, $usr_mac, $usr_ip, $return->usr_id, $return->usr_permission);
+        }else{
+            return "";
+        }
+    }
+}
+
+
 
 //RECUPERAÇÃO DO FORMULÁRIO
-$data = file_get_contents("php://input");
-$objData = json_decode($data);
+//$data = file_get_contents("php://input");
+//$objData = json_decode($data);
+
+
+
 
 // function login($conn, $array){
 //   $users = $conn->prepare("SELECT id, name, email, coins, nick FROM `users` WHERE (`email` = ? OR `nick` LIKE ?) AND `pass` = ?");
