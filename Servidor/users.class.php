@@ -27,6 +27,7 @@ class User extends Security{
         return $this->permission;
     }
 
+
     function __construct (){
         // INITIALIZE THE DATABASE CONECTION
         $this->DataBaseInstance = Connect::getInstance();
@@ -50,6 +51,17 @@ class User extends Security{
             return "";
         }
     }
+    // FUNÇÃO EXTERNA A CLASSE PARA FAZER LOGOFF
+    public function Logout($token, $op){
+        if(($op == "app" && $this->permission == 3) || ($op == "web" && ($this->permission == 1 || $this->permission == 2))){
+            if(parent::DeleteToken($token, $this->usr_id)){
+                return "1";
+            }else{
+                return "-1";
+            }
+        }
+    }
+
     // ESTA FUNÇÃO É INTERNA QUANDO QUEREMOS CARREGAR USUARIO
     private function LoadUser(){
         $SqlQuery = $this->DataBaseInstance->prepare("SELECT * FROM `users` WHERE `usr_id` = ?");
@@ -58,6 +70,7 @@ class User extends Security{
             $this->permission = $return->usr_permission;   
         }
     }
+
     // FUNÇÃO PUBLICA PARA VERIFICARMOS SE O TOKEN EXISTE 
     public function CheckToken($token, $op){
         if( ($this->usr_id = parent::CheckToken($token)) != 0){

@@ -1,4 +1,9 @@
 <?php
+
+header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
+header("Cache-Control: post-check=0, pre-check=0", false);
+header("Pragma: no-cache");
+
 // ESTA PAGINA E SO PARA TESTE DA API !!
 include_once 'class/security.php';
 include_once 'users.class.php';

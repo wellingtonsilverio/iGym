@@ -7,11 +7,10 @@
 // LIBRARIES
 include_once 'connect.pdo.php';
 
-
 class Security{
 
     private $DataBaseInstance;
-    
+
     // FUNÇÃO PARA CRIAR UM TOKEN QUANDO FIZER O LOGIN
     protected function CreateToken($op, $mac, $ip, $usr){
 
@@ -51,11 +50,9 @@ class Security{
         $DataBaseInstance = Connect::getInstance();
         $SqlQuery = $DataBaseInstance->prepare("DELETE FROM `security_token` WHERE `tkn_usr_id`= ? AND `tkn_id` = ?");
         if($SqlQuery->execute(array($usr_id,$token))){
-            if(isset($_COOKIE['SSID'])){
-                unset($_COOKIE['SSID']);
-                setcookie('SSID','', time() - 3600);
-            }
-           return true; 
+            return true;
+        }else{
+            return false;
         }
     }
     // FUNÇÃO PARA CHECKAR O TOKEN

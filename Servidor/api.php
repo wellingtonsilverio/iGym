@@ -8,9 +8,11 @@ header("Access-Control-Allow-Origin:*");
 include_once 'users.class.php';
 
 if(isset($_POST['f'])){
-    $function = $_POST['f'];
-    // LOGIN FUNCTION
-    if($function == "1"){
+
+    $function = $_POST['f']; // FUNÇÃO DESEJADA DA API
+
+    // FUNÇÕES SEM TOKEN
+    if($function == "1"){// LOGIN FUNCTION FOR ALL USER TYPES
         // IF ALL INFORMATION ARE HERE, WE CAN TRY A LOGIN
         if(isset($_POST['e'],$_POST['p'],$_POST['m'],$_POST['s'],$_SERVER['REMOTE_ADDR'])){
             echo User::Logar($_POST['e'],$_POST['p'],$_POST['m'],$_POST['s'],$_SERVER['REMOTE_ADDR']);
@@ -18,6 +20,11 @@ if(isset($_POST['f'])){
             // DO NOTHING
         }
     }
+    else if($function == "2"){ // LOGOUT FUNCTION FOR APP
+
+    }
+
+    // FUNÇÕES COM TOKEN ...
 
 }else{
     // DO NOTHING
