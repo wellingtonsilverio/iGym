@@ -1,12 +1,18 @@
 <?php
 // ESTA PAGINA E SO PARA TESTE DA API !!
+include_once 'class/security.php';
+include_once 'users.class.php';
 
-
-// PRECISA CRIAR NA CLASSE SECURITY UMA FUNÇÃO PARA DIRECIONAR AS VIEW CORRETAS A CADA TIPO DE USUARIO, OU SEJA SUAS PERMISSOES
-// CASO ESTEJA LOGADO, JOGA ELE PARA A PAGINA DE PAINEL
-
+if(isset($_COOKIE['SSID'])){
+    $user = new User();
+    if($user->CheckToken($_COOKIE['SSID'], "web") == true){
+        header('location: painel.php');
+    }else{
+        unset($_COOKIE['SSID']);
+        setcookie('SSID', '', time() - 3600);
+    }
+}
 ?>
-
 
 <html>
     <header></header>
@@ -27,7 +33,11 @@
             xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
             xhr.onload = function() {
                 var response = xhr.responseText;
-                alert(response);
+                if(response == "1"){
+                    window.location.assign('painel.php');
+                }else{
+                    alert("Login ou senha incorretos !");
+                }
             };
             xhr.send("f=1&e="+email+"&p="+pass+"&m=&s=web");
         }

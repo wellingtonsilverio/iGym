@@ -10,89 +10,67 @@ include_once 'class/security.php';
 
 // USER CLASS FOR ANYTHING WHO USERS CAN DO
 class User extends Security{
-    private $Connection;
+
+    // DADOS DE CONEXÃO
     private $DataBaseInstance;
+
+    // DADOS DO USUARIO
+    private $id = 0;
+    private $email = "";
+    private $nick = "";
+    private $password = "";
+    private $permission = 0;
+    private $status = 0;
+
+    // GETTERS AND SETTER
+    public function permission(){
+        return $this->permission;
+    }
 
     function __construct (){
         // INITIALIZE THE DATABASE CONECTION
-        $this->Connection = new Connect();
-        $this->DataBaseInstance = $this->Connection->getInstance();
+        $this->DataBaseInstance = Connect::getInstance();
     }
 
-    public function Logar($usr_email, $usr_pass, $usr_mac, $usr_system, $usr_ip){
-        
-        $SqlQuery = $this->DataBaseInstance->prepare("SELECT usr_id, usr_permission FROM `users` WHERE (`usr_email` = ? OR `usr_nick` = ?) AND `usr_pass` = ?");
+    // FUNÇÃO ESTATICA POIS É UZADA EXTERNAMENTE A CLASSE 
+    public static function Logar($usr_email, $usr_pass, $usr_mac, $usr_system, $usr_ip){
+
+        $DataBaseInstance = Connect::getInstance();
+        $SqlQuery = $DataBaseInstance->prepare("SELECT * FROM `users` WHERE (`usr_email` = ? OR `usr_nick` = ?) AND `usr_pass` = ?");
         $SqlQuery->execute(array($usr_email, $usr_email, $usr_pass));
         
         if($return = $SqlQuery->fetchObject()){
-            return parent::CreateToken($usr_system, $usr_mac, $usr_ip, $return->usr_id, $return->usr_permission);
+            // CHECK IF THE CURRENT USER IS IN AMBIENT OPERATING CORRECT
+            if(($return->usr_permission == 3 && $usr_system == "app") || ((($return->usr_permission == 1 || $return->usr_permission == 2) && $usr_system == "web"))){
+                return parent::CreateToken($usr_system, $usr_mac, $usr_ip, $return);
+            }else{
+                return "-1";
+            }
         }else{
             return "";
         }
     }
+    // ESTA FUNÇÃO É INTERNA QUANDO QUEREMOS CARREGAR USUARIO
+    private function LoadUser(){
+        $SqlQuery = $this->DataBaseInstance->prepare("SELECT * FROM `users` WHERE `usr_id` = ?");
+        $SqlQuery->execute(array($this->usr_id));
+        if($return = $SqlQuery->fetchObject()){
+            $this->permission = $return->usr_permission;   
+        }
+    }
+    // FUNÇÃO PUBLICA PARA VERIFICARMOS SE O TOKEN EXISTE 
+    public function CheckToken($token, $op){
+        if( ($this->usr_id = parent::CheckToken($token)) != 0){
+            self::LoadUser();
+            if(($op == "app" && $this->permission == 3) || ($op == "web" && ($this->permission == 1 || $this->permission == 2))){
+                return true; 
+            }else{
+                return false;
+            }
+            return true;
+        }else{
+            return false;
+        }
+    }
 }
-
-
-
-//RECUPERAÇÃO DO FORMULÁRIO
-//$data = file_get_contents("php://input");
-//$objData = json_decode($data);
-
-
-
-
-// function login($conn, $array){
-//   $users = $conn->prepare("SELECT id, name, email, coins, nick FROM `users` WHERE (`email` = ? OR `nick` LIKE ?) AND `pass` = ?");
-//   $users->execute($array);
-//   return json_encode($users->fetch(PDO::FETCH_ASSOC));
-// }
-// function getUser($conn, $array){
-//   $users = $conn->prepare("SELECT id, name, email, coins, nick FROM `users` WHERE `id` = ?");
-//   $users->execute($array);
-//   return json_encode($users->fetch(PDO::FETCH_ASSOC));
-// }
-//
-// if(isset($objData->key) && $objData->key == "c7c841c6aabbbb2d742580b3f816817a"){
-//   if(isset($objData->email) && isset($objData->pass)){
-//     $email = $objData->email;
-//     $pass = md5(sha1($objData->pass));
-//
-//     echo login($conn, array($email, $email, $pass));
-//   }
-//
-//   if(isset($objData->id) && isset($objData->coins)){
-//     $id = $objData->id;
-//     $coins = $objData->coins;
-//
-//
-//     $incrementCoins = $conn->prepare("UPDATE `users` SET `coins`= `coins` + ? WHERE `id` = ?");
-//     if($incrementCoins->execute(array($coins, $id))){
-//       $insertPrize = $conn->prepare("INSERT INTO `prizes` (`user`, `value`) VALUES (?,?)");
-//       if($insertPrize->execute(array($id, $coins))){
-//         echo getUser($conn, array($id));
-//       }
-//
-//     }
-//   }
-//   if(isset($objData->name) && isset($objData->email) && isset($objData->newpass)){
-//     $name = $objData->name;
-//     $email = $objData->email;
-//     $nick = $objData->nick;
-//     $pass = md5(sha1($objData->newpass));
-//
-//     $insert = $conn->prepare("INSERT INTO `users` (`name`, `email`, `nick`, `pass`) VALUES (?,?,?,?)");
-//     if($insert->execute(array($name, $email, $nick, $pass))){
-//       echo login($conn, array($email, $email, $pass));
-//     }
-//   }
-//   if(isset($objData->prizeId)){
-//     $id = $objData->prizeId;
-//
-//     $hasPrize = $conn->prepare("SELECT `date` FROM `prizes` WHERE (`user` = ?) AND (`date` > DATE_SUB(NOW(), INTERVAL 12 HOUR)) LIMIT 1");
-//     $hasPrize->execute(array($id));
-//     echo json_encode($hasPrize->fetch(PDO::FETCH_ASSOC));
-//   }
-// }
-
-
 ?>

@@ -10,11 +10,8 @@ class Connect{
 
 	public static $instance;
 
-	public function Connect() {
-		return $this->getInstance();
-	}
-
 	public static function getInstance() {
+
 		$host = "localhost";
 		$dbName = "igym";
 		$usrNick = "root";
