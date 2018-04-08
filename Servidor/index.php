@@ -11,7 +11,7 @@ include_once 'services/users.class.php';
 if(isset($_COOKIE['SSID'])){
     $user = new User();
     if($user->CheckToken($_COOKIE['SSID'], "web") == true){
-        header('location: painel.php');
+        header('location: dashboard.php');
     }else{
         unset($_COOKIE['SSID']);
         setcookie('SSID', '', time() - 3600);
@@ -40,7 +40,7 @@ if(isset($_COOKIE['SSID'])){
                 var response = xhr.responseText;
                 
                 if(response == "1"){
-                    window.location.assign('painel.php');
+                    window.location.assign('dashboard.php');
                 }else{
                     alert("Login ou senha incorretos !");
                 }

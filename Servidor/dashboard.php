@@ -10,7 +10,7 @@ if(isset($_COOKIE['SSID'])){
         if($user->permission() != 1 && $user->permission() != 2){ // CHECA NÃO TENHA PERMISSAO AQUI
             unset($_COOKIE['SSID']);
             setcookie('SSID', '', time() - 3600);
-            header('location: pagina_not.html');
+            header('location: not_found.php');
         }else{ // CASO ESTEJA TUDO CERTO !!
 
             // FUNCIONALIDADE PARA FAZER LOGOUT
@@ -30,10 +30,10 @@ if(isset($_COOKIE['SSID'])){
     }else{ // CASO O TOKEN NÃO SEJA INVALIDO
         unset($_COOKIE['SSID']);
         setcookie('SSID', '', time() - 3600);
-        header('location: pagina_not.html');
+        header('location: not_found.php');
     }
 }else{ // CASO NÃO POSSUA TOKEN
-    header('location: pagina_not.html');
+    header('location: not_found.php');
 }
 ?>
 
