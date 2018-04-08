@@ -21,7 +21,16 @@ if(isset($_POST['f'])){
         }
     }
     else if($function == "2"){ // LOGOUT FUNCTION FOR APP
-
+        $user = new User();
+        if($user->CheckToken($_POST['tkn'], "app") == true){
+            if($user->Logout($_POST['tkn'], "app") == "1"){
+                echo '1';                   
+            }else{ // ALGUM ERRO NO DESLOGAR
+                echo '-1';
+            }
+        }else{
+            echo '-1';
+        }
     }
 
     // FUNÇÕES COM TOKEN ...

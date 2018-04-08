@@ -1,5 +1,5 @@
 <?php
-include_once 'users.class.php';
+include_once 'services/users.class.php';
 
 if(isset($_COOKIE['SSID'])){
 
@@ -16,6 +16,7 @@ if(isset($_COOKIE['SSID'])){
             // FUNCIONALIDADE PARA FAZER LOGOUT
             if(isset($_GET['l'])){
                 if($user->Logout($_COOKIE['SSID'], "web") == "1"){
+                    // CASO O TOKEN TENHA SIDO EXCLUIDO COM SUCESSO DO BANCO DE DADOS, ENTÃO É DELETADO DA MAQUINA
                     unset($_COOKIE['SSID']);
                     setcookie('SSID', '', time() - 3600);
                     header('location: index.php');                   
@@ -23,6 +24,8 @@ if(isset($_COOKIE['SSID'])){
                     // ALGUM ERRO NO DESLOGAR
                 }
             }
+
+            // LOAD CURRENT PAGE 
         }
     }else{ // CASO O TOKEN NÃO SEJA INVALIDO
         unset($_COOKIE['SSID']);
@@ -41,13 +44,6 @@ if(isset($_COOKIE['SSID'])){
         <form method="GET">
             <input name="l" value="true" hidden="true" />
             <input type="submit" value="Sair"/>
-            <!-- <button onclick="submit();">Enviar</button> -->
         </form>
     </body>
-
-    // <script>
-    //     function submit(){
-            
-    //     }
-    // </script>
 </html>

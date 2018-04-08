@@ -35,7 +35,7 @@ class Security{
         if($SqlQuery->execute(array($token, $usr->usr_id,$mac,$op,$ip,date("Y-m-d"),date("Y-m-d")))){
             // DEPOIS É VERIFICADO QUAL A ORIGEM DO TOKEN, CASO FOIR WEB É REGISTRADO COMOM COOKIE, CASO SEJA O APP É ENVIADO COMO RETORNO VIA HTTP
             if($op == "web"){
-                setcookie("SSID",$token, time() + (10 * 365 * 24 * 60 * 60));
+                setcookie("SSID",$token, strtotime("+ 300 days") , '/');
                 return "1";
             }else if($op == "app"){
                 return $token;

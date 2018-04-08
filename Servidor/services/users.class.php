@@ -42,7 +42,7 @@ class User extends Security{
         
         if($return = $SqlQuery->fetchObject()){
             // CHECK IF THE CURRENT USER IS IN AMBIENT OPERATING CORRECT
-            if(($return->usr_permission == 3 && $usr_system == "app") || ((($return->usr_permission == 1 || $return->usr_permission == 2) && $usr_system == "web"))){
+            if((($return->usr_permission == 3 || $return->usr_permission == 4 ) && $usr_system == "app") || ($usr_system == "web" && ($return->usr_permission == 1 || $return->usr_permission == 2))){
                 return parent::CreateToken($usr_system, $usr_mac, $usr_ip, $return);
             }else{
                 return "-1";
@@ -53,7 +53,7 @@ class User extends Security{
     }
     // FUNÇÃO EXTERNA A CLASSE PARA FAZER LOGOFF
     public function Logout($token, $op){
-        if(($op == "app" && $this->permission == 3) || ($op == "web" && ($this->permission == 1 || $this->permission == 2))){
+        if((($this->permission == 3 || $this->permission == 4 ) && $op == "app") || ($op == "web" && ($this->permission == 1 || $this->permission == 2))){
             if(parent::DeleteToken($token, $this->usr_id)){
                 return "1";
             }else{
@@ -75,7 +75,7 @@ class User extends Security{
     public function CheckToken($token, $op){
         if( ($this->usr_id = parent::CheckToken($token)) != 0){
             self::LoadUser();
-            if(($op == "app" && $this->permission == 3) || ($op == "web" && ($this->permission == 1 || $this->permission == 2))){
+            if((($this->permission == 3 || $this->permission == 4 ) && $op == "app") || ($op == "web" && ($this->permission == 1 || $this->permission == 2))){
                 return true; 
             }else{
                 return false;
