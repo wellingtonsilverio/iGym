@@ -5,8 +5,8 @@
 //header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept");
 
 // LIBRARIES
-include_once 'class/connect.pdo.php';
-include_once 'class/security.php';
+include_once 'controller/connect.pdo.php';
+include_once 'controller/security.php';
 
 // USER CLASS FOR ANYTHING WHO USERS CAN DO
 class User extends Security{
@@ -15,19 +15,25 @@ class User extends Security{
     private $DataBaseInstance;
 
     // DADOS DO USUARIO
-    private $id = 0;
-    private $email = "";
-    private $nick = "";
-    private $password = "";
-    private $permission = 0;
-    private $status = 0;
+    protected $id = 0;
+    protected $email = "";
+    protected $nick = "";
+    protected $password = "";
+    protected $permission = 0;
+    protected $status = 0;
 
     // GETTERS AND SETTER
-    public function permission(){
+    protected function set_user($user){
+        $this->id = $user->id;
+        $this->email = $this->nick = $user->email;
+        $this->password = $user->password;
+        $this->permission = $user->permission;
+        $this->status = $user->status;
+    }
+    public function get_permission(){
         return $this->permission;
     }
-
-
+    
     function __construct (){
         // INITIALIZE THE DATABASE CONECTION
         $this->DataBaseInstance = Connect::getInstance();
