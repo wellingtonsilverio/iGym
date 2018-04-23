@@ -1,0 +1,13 @@
+#URL AMIGÁVEL
+RewriteEngine On
+RewriteRule ^([a-zA-Z0-9_-]+)$ index.php?P=$1
+#RewriteRule ^([a-zA-Z0-9_-]+)/$ index.php?P=$1
+
+RewriteRule ^([a-zA-Z0-9_-]+)/([a-zA-Z0-9_-]+)$ index.php?P=$1&SP=$2
+#RewriteRule ^([a-zA-Z0-9_-]+)/([a-zA-Z0-9_-]+)$/ index.php?P=$1&SP=$2
+
+RewriteRule ^([a-zA-Z0-9_-]+)/([a-zA-Z0-9_-]+)/([a-zA-Z0-9_-]+)$ index.php?P=$1&SP=$2&ID=$3
+#RewriteRule ^([a-zA-Z0-9_-]+)/([a-zA-Z0-9_-]+)/([a-zA-Z0-9_-]+)$/ index.php?P=$1&SP=$2&ID=$3
+
+#404 DOCUMENT PAGE
+ErrorDocument 404 /404.php

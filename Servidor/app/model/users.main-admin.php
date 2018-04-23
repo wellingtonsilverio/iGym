@@ -1,7 +1,7 @@
 <?php
 // LIBRARIES
-include_once 'users.class.php';
-include_once 'controller/connect.pdo.php';
+include_once __DIR__.'/users.class.php';
+include_once __DIR__.'/../controller/connect.pdo.php';
 
 class MainAdmin extends User{
 
@@ -23,22 +23,16 @@ class MainAdmin extends User{
     
     */
     public function LoadAcademias(){
-        $return = "";
+        $return = [];
         if($this->get_permission() == 1){
             $SqlQuery = $this->DataBaseInstance->prepare("SELECT * FROM `gyms` ");
             $SqlQuery->execute();
-            while($result = $SqlQuery->fetchObject()){
-                $return .= '
-                <tr>
-                    <th>'.$result->gym_name.'</th>
-                    <th> X </th>
-                    <th><a href="edit-academia.php?c="'.$result->gym_id.'>Editar</a></th>
-                </tr>
-                ';
-            }
 
-            return $return;
+            while($result = $SqlQuery->fetchObject()){
+                array_push($return, $result);
+            }
         }
+        return $return;
     }
 
 }

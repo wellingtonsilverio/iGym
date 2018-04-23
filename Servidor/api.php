@@ -1,11 +1,11 @@
 <?php
 // FOR DOWNLOAD FILE WHEN MADE EXTERNAL ACCESS 
 header("Access-Control-Allow-Origin:*");
-//header("Content-Type: application/x-www-form-urlencoded");
-//header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept");
+header("Content-Type: application/x-www-form-urlencoded");
+header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept");
 
 // LIBRARIES
-include_once 'users.class.php';
+include_once __DIR__.'/app/model/users.class.php';
 
 if(isset($_POST['f'])){
 

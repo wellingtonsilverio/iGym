@@ -1,24 +1,3 @@
-<?php
-
-// header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
-// header("Cache-Control: post-check=0, pre-check=0", false);
-// header("Pragma: no-cache");
-
-// ESTA PAGINA E SO PARA TESTE DA API !!
-// include_once 'services/class/security.php';
-include_once 'services/users.class.php';
-
-if(isset($_COOKIE['SSID'])){
-    $user = new User();
-    if($user->CheckToken($_COOKIE['SSID'], "web") == true){
-        header('location: dashboard.php');
-    }else{
-        unset($_COOKIE['SSID']);
-        setcookie('SSID', '', time() - 3600);
-    }
-}
-?>
-
 <html>
     <header></header>
     <body>
@@ -34,13 +13,13 @@ if(isset($_COOKIE['SSID'])){
             
             xhr = new XMLHttpRequest(); // Conecta ao servidor para fazer a conexão
 
-            xhr.open('POST',encodeURI("services/api.php"));
+            xhr.open('POST',encodeURI("../api.php"));
             xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
             xhr.onload = function() {
                 var response = xhr.responseText;
                 
                 if(response == "1"){
-                    window.location.assign('dashboard.php');
+                    window.location.assign('dashboard');
                 }else{
                     alert("Login ou senha incorretos !");
                 }
